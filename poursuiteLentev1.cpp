@@ -27,6 +27,9 @@ void SystemManager::renderingManager() {
 int main( int argc, char *argv[ ] )
 {
     SDL_Surface *screen;
+    int direction, espace_mur;
+    direction = 1;
+    espace_mur = 50;
     SystemManager sysMgr;
     sysMgr.running = true;
     int lastrender = 0;
@@ -37,7 +40,7 @@ int main( int argc, char *argv[ ] )
     }
 
     atexit( SDL_Quit );
-    screen = SDL_SetVideoMode( 640, 480, 16, SDL_HWSURFACE ); // initialisation de l'ecran 
+    screen = SDL_SetVideoMode( 640, 480, 16, SDL_HWSURFACE | SDL_FULLSCREEN ); // initialisation de l'ecran
 
     if( !screen)
     {
@@ -47,7 +50,7 @@ int main( int argc, char *argv[ ] )
 
     SDL_Rect position; // creation du point (rectangle)
     SDL_Surface *rectangle = NULL;
-    rectangle = SDL_CreateRGBSurface(SDL_HWSURFACE, 12, 12, 16, 1, 0, 0, 0); // taille et couleur
+    rectangle = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 20, 16, 0, 1, 0, 0); // taille et couleur
 
     position.x = screen->w/2; //structure pour placer le point au centre
     position.y = screen->h/2;
@@ -62,8 +65,12 @@ int main( int argc, char *argv[ ] )
    // SDL_Delay( 100 );
     SDL_FillRect(rectangle, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
     SDL_BlitSurface(rectangle, NULL, screen, &position); // Collage de la surface sur l'écran
-    position.x = (position.x +10)%screen->w;
-    SDL_Delay( 2000 );
+    position.x = (position.x +10*direction)%screen->w;
+    if((position.x >= (screen->w - espace_mur))&&(direction == 1))
+        direction = - direction;
+    if((position.x <= (espace_mur))&&(direction == -1))
+        direction = - direction;
+    SDL_Delay( 1 );
 
 
             }
@@ -73,5 +80,9 @@ int main( int argc, char *argv[ ] )
   return EXIT_SUCCESS;
 
 }
+
+
+
+
 
 
